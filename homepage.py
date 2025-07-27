@@ -14,6 +14,7 @@ image_path = os.path.join(current_dir, "assets", "bmc_qr.png")
 
 # Set Streamlit to wide layout, this must be called at the top level before any other Streamlit function
 st.set_page_config(layout="wide")
+st.logo(image_path, icon_image=image_path)
 
 left_col, right_col = st.columns([5,5])
 
