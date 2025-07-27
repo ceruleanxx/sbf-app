@@ -9,6 +9,7 @@ from lib.initialize import load_data_by_sheet
 import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 template_path = os.path.join(current_dir, "template.xlsx")
+compiled_data_path = os.path.join(current_dir, "compiled_july_2025.xlsx")
 image_path = os.path.join("assets", "bmc_qr.png")
 
 # Set Streamlit to wide layout, this must be called at the top level before any other Streamlit function
@@ -26,6 +27,15 @@ with left_col:
             label="📥 Download Excel Template",
             data=file,
             file_name="template.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+
+    st.success("You may also feel free to download the one I have already compiled.")
+    with open(template_path, "rb") as file:
+        st.download_button(
+            label="📥 Download July 2025",
+            data=file,
+            file_name="sbf_july_2025.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
     
