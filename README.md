@@ -27,8 +27,8 @@ streamlit run homepage.py
 
 # Version
 **v.1.0.0 - (27 Jul 2025)
-- First version of the add
-- Currently does not support file upload, reads from static path
+- First version of the app that allows user to file upload
+- Installed feedback form and donation
 
 
 ## Contributing

@@ -1,51 +1,89 @@
 
 import streamlit as st
-import pandas as pd
 import importlib
+from PIL import Image
 
 from lib.initialize import load_data_by_sheet
 
 
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__))
+template_path = os.path.join(current_dir, "template.xlsx")
+image_path = os.path.join("assets", "bmc_qr.png")
+
 # Set Streamlit to wide layout, this must be called at the top level before any other Streamlit function
 st.set_page_config(layout="wide")
 
-sheet_data = load_data_by_sheet()
-sheet_names = list(sheet_data.keys())
+left_col, right_col = st.columns([5,5])
 
-# Sidebar nav
-selected_exercise = st.sidebar.selectbox("📄 Select Exercise", sheet_names)
+with left_col:
+    st.title("Welcome! :sunglasses:")
+    st.info("Step 1: To use the app, download the template below and fill in everything from Col A to Q. Please follow the sample data already given.")
+    st.info("Step 2: Then upload it on the right start to start your analysis!")
 
-# Filter town list from selected sheet
-df = sheet_data[selected_exercise]
+    with open(template_path, "rb") as file:
+        st.download_button(
+            label="📥 Download Excel Template",
+            data=file,
+            file_name="template.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+    
+        
+with right_col:
+    uploaded_file = st.file_uploader("📄 Upload Data File", type=["xlsx"])
 
-# Make sure Town column exists
-available_towns = sorted(df['Town'].dropna().unique())
+    if uploaded_file:
+        st.success("Like what you see? Consider buying me a cup of coffee: http://coff.ee/ceruleanxx")
+        image = Image.open(image_path)
+        st.image(image, width=200)
 
-# Map town names to module names
-town_pages = {
-    "Bishan"        : "bishan",
-    "Choa Chu Kang" : "choachukang",
-    "Geylang"       : "geylang",
-    "Ang Mo Kio"    : "angmokio",
-    "Toa Payoh"     : "toa_payoh",
-    "Queenstown"    : "queenstown",
-    "Kallang/Whampoa" : "kallang",
-    "Woodlands"     : "woodlands"
-}
+st.markdown("---") # Separator
 
-# Filter towns that have a module
-filtered_towns = [town for town in available_towns if town in town_pages]
+if uploaded_file:
+    sheet_data = load_data_by_sheet(uploaded_file)
+    sheet_names = list(sheet_data.keys())
 
-# Town selector
-selected_town = st.sidebar.selectbox("🏙️ Select Town", filtered_towns)
+    # Sidebar nav
+    selected_exercise = st.sidebar.selectbox("📄 Select Exercise", sheet_names)
 
-# Dynamically import and run the corresponding module
-module_name = f"town.{town_pages[selected_town]}"
-module = importlib.import_module(module_name)
+    # Filter town list from selected sheet
+    df = sheet_data[selected_exercise]
+
+    # Make sure Town column exists
+    available_towns = sorted(df['Town'].dropna().unique())
+
+    # Map town names to module names
+    town_pages = {
+        "Bishan"        : "bishan",
+        "Choa Chu Kang" : "choachukang",
+        "Geylang"       : "geylang",
+        "Ang Mo Kio"    : "angmokio",
+        "Toa Payoh"     : "toa_payoh",
+        "Queenstown"    : "queenstown",
+        "Kallang/Whampoa" : "kallang",
+        "Woodlands"     : "woodlands"
+    }
+
+    # Filter towns that have a module
+    filtered_towns = [town for town in available_towns if town in town_pages]
+
+    # Town selector
+    selected_town = st.sidebar.selectbox("🏙️ Select Town", filtered_towns)
+
+    # Dynamically import and run the corresponding module
+    module_name = f"town.{town_pages[selected_town]}"
+    module = importlib.import_module(module_name)
 
 
-df_final = df[df['Town'] == selected_town]
-module.app(df_final, selected_town)
+    df_final = df[df['Town'] == selected_town]
+    module.app(df_final, selected_town)
+
+    # Feedback
+    st.sidebar.markdown("💬 [Submit Feedback](https://form.typeform.com/to/fUV6KBRZ)")
+
+
+    
 
 
 
