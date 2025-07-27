@@ -8,9 +8,9 @@ from lib.initialize import load_data_by_sheet
 
 import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
-template_path = os.path.join(current_dir, "template.xlsx")
-compiled_data_path = os.path.join(current_dir, "compiled_july_2025.xlsx")
-image_path = os.path.join("assets", "bmc_qr.png")
+template_path = os.path.join(current_dir, "assets", "template.xlsx")
+compiled_data_path = os.path.join(current_dir, "assets", "compiled_july_2025.xlsx")
+image_path = os.path.join(current_dir, "assets", "bmc_qr.png")
 
 # Set Streamlit to wide layout, this must be called at the top level before any other Streamlit function
 st.set_page_config(layout="wide")
@@ -31,7 +31,7 @@ with left_col:
         )
 
     st.success("You may also feel free to download the one I have already compiled.")
-    with open(template_path, "rb") as file:
+    with open(compiled_data_path, "rb") as file:
         st.download_button(
             label="📥 Download July 2025",
             data=file,
@@ -44,7 +44,7 @@ with right_col:
     uploaded_file = st.file_uploader("📄 Upload Data File", type=["xlsx"])
 
     if uploaded_file:
-        st.success("Like what you see? Consider buying me a cup of coffee: http://coff.ee/ceruleanxx")
+        st.success("Did you find it helpful? Consider buying me a cup of coffee: http://coff.ee/ceruleanxx")
         image = Image.open(image_path)
         st.image(image, width=200)
 
