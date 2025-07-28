@@ -5,14 +5,13 @@ from datetime import date
 import lib.modules as mod
 
 
-def render_town_page(df, selection, modules, custom_func=None):
+def app(df, selection):
     try:
         # Only take the projects that we want to compare
         df['Chinese'] = df['Chinese'].fillna(0)
         df['Malay'] = df['Malay'].fillna(0)
         df['Indian/Oth'] = df['Indian/Oth'].fillna(0)
         df['Probable Completion Date'] = pd.to_datetime(df['Probable Completion Date'])
-
 
         # Only take the rows we want to plot
         df = df[(df['Plot Graph'] == 'Y')] #& (df['Chinese'] > 0)]   
@@ -42,16 +41,10 @@ def render_town_page(df, selection, modules, custom_func=None):
         
         mod.pie_chart(df)
 
-
     with right_col:
         mod.unit_count_by_room_type(df)
         mod.project_summary(df)
-        
-
-    # Optional custom content (eg. town-specific analysis)
-    if custom_func:
-        custom_func(df, modules)
-    
+  
     st.markdown("---") # Separator
 
     with st.container():

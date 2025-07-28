@@ -30,6 +30,12 @@ streamlit run homepage.py
 - First version of the app that allows user to file upload
 - Installed feedback form and donation
 
+**v.1.1.0 - (28 Jul 2025)
+- Did away with repeated /town pages with the same format
+- Added application rates page to the side bar
+- Restructured the steps at the header
+- Fixed language and instructive commands for better clarity 
+
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first

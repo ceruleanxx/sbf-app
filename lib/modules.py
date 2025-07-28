@@ -1,8 +1,11 @@
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import seaborn as sns
 import streamlit as st
 import pandas as pd
 from datetime import date
+
 
 
 def filter_cond(row):
@@ -29,8 +32,6 @@ def unit_count_by_room_type(df):
     
     except Exception as e:
         st.error(f'[Unit Count by Room Type] : Error occured - {e}')
-
-
 
 
 def highlight_future_rows(row):
@@ -247,6 +248,67 @@ def unit_floor_distribution_5rm(df): # FacetGrid
         st.error(f'[FacetGrid] : Error occured - {e}')
 
 
+
+def appl_rate_bar(application_rates_path):
+    df_feb = pd.read_excel(application_rates_path, sheet_name='2025FEB')
+    df_jul = pd.read_excel(application_rates_path, sheet_name='2025JUL')
+
+    room_types = ['3R','4R','5R']
+
+    for room in room_types:
+        st.subheader(f"{room} Application Rate for First-Timers")
+
+        # Prepare bar chart
+        fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+        # Bar: FEB Count
+        fig.add_trace(go.Bar(
+            x = df_feb['Town'],
+            y = df_feb[f'{room} Count'],
+            name = '2025FEB Count',
+            marker_color='#854745'
+        ), secondary_y=False)
+
+        # Bar: JUL Count
+        fig.add_trace(go.Bar(
+            x = df_jul['Town'],
+            y = df_jul[f'{room} Count'],
+            name = '2025JUL Count',
+            marker_color='#27718f'
+        ), secondary_y=False)
+
+        # Line: FEB Rate
+        fig.add_trace(go.Scatter(
+            x = df_feb['Town'],
+            y = df_feb[f'{room} Rate'],
+            name = '2025FEB Rate',
+            mode='lines+markers',
+            line=dict(color='darkred', dash='dot')
+        ), secondary_y=True)
+
+        # Line: JUL Rate
+        fig.add_trace(go.Scatter(
+            y = df_jul[f'{room} Rate'],
+            x = df_jul['Town'],
+            name = '2025JUL Rate',
+            mode='lines+markers',
+            line=dict(color='steelblue', dash='dot')
+        ), secondary_y=True)
+
+
+        # Layout setup
+        fig.update_layout(
+            title = f"{room} - Counts (bars) & Rates (lines)",
+            xaxis_title='Town',
+            yaxis_title='SBF Unit Count',
+            legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1),
+            height=600,
+            barmode='group'
+        )
+
+        # Right Y-Axis label
+        fig.update_yaxes(title_text="Application Rate", secondary_y=True)
+        st.plotly_chart(fig, use_container_width=True)
 
 
 
