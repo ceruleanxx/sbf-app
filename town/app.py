@@ -17,8 +17,6 @@ def app(df, selection):
         df = df[(df['Plot Graph'] == 'Y')] #& (df['Chinese'] > 0)]   
         df['Normalized_Floor'] = df['Floor'] / df['Highest Floor']
         st.title(selection)
-
-        print(df.dtypes)
     
     except Exception as e:
         st.error(e)

@@ -12,9 +12,9 @@ def filter_cond(row):
     availability_date_raw = st.session_state.get('availability_date', date.today())
     availability_date = pd.Timestamp(availability_date_raw)
     return (
-        row['Probable Completion Date'] > availability_date or
-        row['Standard (Y/N)'] == 'N' or
-        row['Chinese'] == 0
+        row['Probable Completion Date'] > availability_date
+        or row['Standard (Y/N)'] == 'N'
+        #or row['Chinese'] == 0
     )
 
 def unit_count_by_room_type(df):
@@ -28,8 +28,9 @@ def unit_count_by_room_type(df):
 
         # Add a row to the empty DataFrame
         df_sub.loc[0] = [rm_4_count, rm_5_count, nonchinese]
+        #st.markdown(df_sub.reset_index(drop=True).to_html(index=False, escape=False), unsafe_allow_html=True)
         st.write(df_sub)
-    
+
     except Exception as e:
         st.error(f'[Unit Count by Room Type] : Error occured - {e}')
 
@@ -42,22 +43,37 @@ def highlight_future_rows(row):
     
 def project_summary(df):
     try:
-        df['Units Avail'] = df.groupby('Project Name')['Project Name'].transform('count')
+        df['Block'] = df['Block'].astype(str).str.strip()
+        
+        df_count_4rm_block = df[df['Type (4/5-rm)'] == 4].groupby(['Project Name','Block']).size().reset_index(name='4RM Avail')
+        df_count_5rm_block = df[df['Type (4/5-rm)'] == 5].groupby(['Project Name','Block']).size().reset_index(name='5RM Avail')
+        #st.write(df_count_5rm_block)
+        # Merge both count tables back to original df
+        df = df.merge(df_count_4rm_block, on=['Project Name','Block'], how='left')
+        df = df.merge(df_count_5rm_block, on=['Project Name','Block'], how='left')
+
+        df['4RM Avail'] = df['4RM Avail'].astype('Int64')
+        
+        df['5RM Avail'] = df['5RM Avail'].astype('Int64')
         distinct_rows = df[['Project Name', 
-                            'Highest Floor', 
-                            'Probable Completion Date',
-                            'Remaining lease',
+                            'Highest Floor',
                             'Total Units',
                             'Block',
-                            'Chinese',
-                            'Units Avail',
+                            '4RM Avail',
+                            '5RM Avail',
+                            #'Chinese',
+                            'Probable Completion Date',
+                            'Remaining lease',
                             'Standard (Y/N)'
                             ]].drop_duplicates().reset_index(drop=True)
 
-        distinct_rows = distinct_rows.sort_values(by='Probable Completion Date')
-        distinct_rows = distinct_rows.style.apply(highlight_future_rows, axis=1)
+        distinct_rows = distinct_rows.sort_values(by=['Probable Completion Date','Project Name', 'Highest Floor','Block'])
+        distinct_rows = distinct_rows.reset_index(drop=True)
+        styled_df = distinct_rows.style.apply(highlight_future_rows, axis=1) # Converts to Styler object
+        styled_df = styled_df.hide(axis='index')
 
-        st.write(distinct_rows)
+        #st.markdown(styled_df.to_html(), unsafe_allow_html=True)\
+        st.write(styled_df)
     except Exception as e:
         st.error(f'[ProjectSummary] : Error occured - {e}')
 

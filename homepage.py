@@ -36,7 +36,7 @@ def buy_me_coffee():
 left_col, right_col = st.columns([5,5])
 
 # Side bar irregardless of file upload
-page = st.sidebar.radio("Navigation Panel",["Home", "Past Application Rates"])
+page = st.sidebar.radio("🧭 Navigation Pane",["Analysis by Town", "Past Application Rates"])
 if page == "Past Application Rates":
     st.markdown("---") # Separator
     appl_rate_bar(application_rates_path)
