@@ -5,12 +5,12 @@ from PIL import Image
 
 st.cache_data.clear()  # Clear cache on app rerun
 st.cache_resource.clear()  # Clear resource cache on app rerun
-st.set_page_config(page_title="SBF Analyzer", page_icon="🚀")
+st.set_page_config(page_title="SBF Analyzer", page_icon="🏘️")
 st.markdown(
     """
     <meta property="og:title" content="SBF Analyzer" />
     <meta property="og:description" content="Helping you make informed decisions one plot at a time!" />
-    <meta property="og:image" content="https://github.com/ceruleanxx/sbf-app/raw/main/assets/thumbnail.jpg" />
+    <meta property="og:image" content="https://github.com/ceruleanxx/sbf-app/raw/master/assets/thumbnail.jpg" />
     <meta property="og:url" content="https://cerulean-sbf-app.streamlit.app/" />
     """,
     unsafe_allow_html=True
