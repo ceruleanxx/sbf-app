@@ -2,6 +2,9 @@
 import streamlit as st
 from PIL import Image
 
+st.cache_data.clear()  # Clear cache on app rerun
+st.cache_resource.clear()  # Clear resource cache on app rerun
+
 # Set path for assets and files
 import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
