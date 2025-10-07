@@ -10,7 +10,7 @@ st.markdown(
     """
     <meta property="og:title" content="SBF Analyzer" />
     <meta property="og:description" content="Helping you make informed decisions one plot at a time!" />
-    <meta property="og:image" content="https://github.com/ceruleanxx/sbf-app/raw/assets/thumbnail.jpg" />
+    <meta property="og:image" content="https://github.com/ceruleanxx/sbf-app/raw/main/assets/thumbnail.jpg" />
     <meta property="og:url" content="https://cerulean-sbf-app.streamlit.app/" />
     """,
     unsafe_allow_html=True
